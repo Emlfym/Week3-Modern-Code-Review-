@@ -1,56 +1,55 @@
-BOARD_SIZE = 3
-
 def is_win(game):
-    win_conditions = [
-        [(0, 0), (0, 1), (0, 2)],
-        [(1, 0), (1, 1), (1, 2)],
-        [(2, 0), (2, 1), (2, 2)],
-        [(0, 0), (1, 0), (2, 0)],
-        [(0, 1), (1, 1), (2, 1)],
-        [(0, 2), (1, 2), (2, 2)],
-        [(0, 0), (1, 1), (2, 2)],
-        [(0, 2), (1, 1), (2, 0)]
-    ]
-    for condition in win_conditions:
-        values = [game[i][j] for i, j in condition]
-        if values[0] == values[1] == values[2] and values[0]!= '':
-            return True
-    return False
+    win = False
+    # Check rows
+    if game[0][0] == game[0][1] == game[0][2] and (game[0][0] == 'X' or game[0][0] == 'O'):
+        win = True
+    if game[1][0] == game[1][1] == game[1][2] and (game[1][0] == 'X' or game[1][0] == 'O'):
+        win = True
+    if game[2][0] == game[2][1] == game[2][2] and (game[2][0] == 'X' or game[2][0] == 'O'):
+        win = True
+    # Check columns
+    if game[0][0] == game[1][0] == game[2][0] and (game[0][0] == 'X' or game[0][0] == 'O'):
+        win = True
+    if game[0][1] == game[1][1] == game[2][1] and (game[0][1] == 'X' or game[0][1] == 'O'):
+        win = True
+    if game[0][2] == game[1][2] == game[2][2] and (game[0][2] == 'X' or game[0][2] == 'O'):
+        win = True
+    # Check diagonals
+    if game[0][0] == game[1][1] == game[2][2] and (game[0][0] == 'X' or game[0][0] == 'O'):
+        win = True
+    if game[0][2] == game[1][1] == game[2][0] and (game[0][2] == 'X' or game[0][2] == 'O'):
+        win = True
+    return win
 
 def main():
-    game = [[''for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
-    player1_symbol = 'X'
-    player2_symbol = 'O'
-    player_turn = False 
+    game = [[' ' for _ in range(3)] for _ in range(3)]  # Tic-tac-toe board
+    player1 = 'X'
+    player2 = 'O'
+    turn = False  # False for player 1's turn, True for player 2's turn. Player 1 first.
     print("X = Player 1")
     print("O = Player 2")
-    for n in range(BOARD_SIZE * BOARD_SIZE):
-        player_turn = not player_turn 
-        current_player_symbol = player1_symbol if not player_turn else player2_symbol
-        print(f"Player {current_player_symbol}: ", end="")
-        while True:
-            try:
-                i, j = map(int, input("Which cell to mark? i:[1..3], j:[1..3]: ").split())
-                if 1 <= i <= BOARD_SIZE and 1 <= j <= BOARD_SIZE:
-                    i -= 1
-                    j -= 1
-                    break
-                else:
-                    print("Invalid input. Please enter values between 1 and 3.")
-            except ValueError:
-                print("Invalid input. Please enter integers.")
-        game[i][j] = current_player_symbol
+    for n in range(9):
+        turn = not turn  # Switch turns
+        if not turn:
+            print("Player 1: ", end="")
+        else:
+            print("Player 2: ", end="")
+        print("Which cell to mark? i:[1..3], j:[1..3]: ")
+        i, j = map(int, input().split())
+        i -= 1
+        j -= 1
+        if not turn:
+            game[i][j] = 'X'
+        else:
+            game[i][j] = 'O'
         if is_win(game):
             print("Win!")
-            break 
-        if n == BOARD_SIZE * BOARD_SIZE - 1: 
+            break  # Terminate the game
+        if n == 8:  # All cells have been filled
             print("Tie!")
-        # 打印棋盘（使用字符串模板提高效率，这里简单示例）
-        board_str = ""
+        # Show the game board
         for row in game:
-            board_str += "|".join(row) + "\n"
-            board_str += "-" * (BOARD_SIZE * 2 - 1) + "\n"
-        print(board_str)
+            print(" ".join(row))
 
 if __name__ == "__main__":
     main()
